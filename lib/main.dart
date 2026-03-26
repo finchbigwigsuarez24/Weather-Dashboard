@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-void main() {
+void main() 
+{
   runApp(const MyApp());
 }
 
@@ -17,209 +18,318 @@ class MyApp extends StatelessWidget
       debugShowCheckedModeBanner: false,
       theme: ThemeData
       (
-        colorScheme: ColorScheme.fromSeed
-        (
-          seedColor: const Color(0xFF4A90E2),
-          brightness: Brightness.light,
-        ),
+        scaffoldBackgroundColor: const Color(0xFFE9EDF2),
       ),
-      home: const MyHomePage(title: 'Weather Dashboard'),
+      routes: 
+      {
+        "/home": (context) => const WeatherDashboard(),
+      },
+      home: const WeatherDashboard(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget 
+class WeatherDashboard extends StatefulWidget 
 {
-  const MyHomePage({super.key, required this.title});
+  const WeatherDashboard({super.key});
 
-  final String title;
+  @override
+  State<WeatherDashboard> createState() => _WeatherDashboardState();
+}
+
+class _WeatherDashboardState extends State<WeatherDashboard> 
+{
+  final List<Map<String, dynamic>> forecastData = 
+  [
+    {"time": "10:00", "temp": "26°C", "icon": Icons.wb_sunny},
+    {"time": "11:00", "temp": "27°C", "icon": Icons.wb_sunny},
+    {"time": "12:00", "temp": "25°C", "icon": Icons.cloud},
+    {"time": "13:00", "temp": "24°C", "icon": Icons.grain},
+    {"time": "14:00", "temp": "24°C", "icon": Icons.grain},
+    {"time": "15:00", "temp": "23°C", "icon": Icons.cloud},
+    {"time": "16:00", "temp": "22°C", "icon": Icons.grain},
+    {"time": "17:00", "temp": "22°C", "icon": Icons.wb_sunny},
+  ];
 
   @override
   Widget build(BuildContext context) 
   {
     return Scaffold
     (
+      backgroundColor: const Color(0xFFE9EDF2),
       body: SafeArea
       (
-        child: SingleChildScrollView
+        child: Column
         (
-          child: Padding
-          (
-            padding: const EdgeInsets.all(16.0),
+          children: 
+          [
+            const SizedBox(height: 20),
 
+            const Text
+            (
+              "Weather Dashboard",
+              style: TextStyle
+              (
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1C1C1E),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            Expanded(child: buildHome()),
+
+            // 🔻 NAVIGATION
+            Container
+            (
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              color: const Color(0xFFE9EDF2),
+              child: Row
+              (
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: 
+                [
+                  NavItem
+                  (
+                    Icons.home, "Home", true, () 
+                    {
+                      Navigator.pushReplacementNamed(context, '/home');
+                    }
+                  ),
+
+                  NavItem
+                  (
+                    Icons.search, "Search", false, () 
+                    {
+                      ScaffoldMessenger.of(context).showSnackBar
+                      (
+                        const SnackBar
+                        (
+                          content: Text("Search clicked 🔍"),
+                        ),
+                      );
+                    }
+                  ),
+
+                  NavItem
+                  (
+                    Icons.person, "Profile", false, () 
+                    {
+                      ScaffoldMessenger.of(context).showSnackBar
+                      (
+                        const SnackBar
+                        (
+                          content: Text("Profile clicked 👤"),
+                        ),
+                      );
+                    }
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 🏠 HOME UI
+  Widget buildHome() 
+  {
+    return SingleChildScrollView
+    (
+      child: Column
+      (
+        children: 
+        [
+          Container
+          (
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration
+            (
+              color: const Color(0xFFD6DCE4),
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: 
+              [
+                BoxShadow
+                (
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
             child: Column
             (
-              crossAxisAlignment: CrossAxisAlignment.start,
-
               children: 
               [
-                const Padding
+                Row
                 (
-                  padding: EdgeInsets.only(bottom: 24.0),
-                  
-                  child: Center
-                  (
-                    child: Text
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: 
+                  [
+                    const Icon(Icons.wb_cloudy, size: 72, color: Colors.orange),
+                    const SizedBox(width: 20),
+                    Column
                     (
-                      'Weather Dashboard',
-
-                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-
-                Container
-                (
-                  padding: const EdgeInsets.all(24),
-
-                  decoration: BoxDecoration
-                  (
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-
-                  child: Row
-                  (
-                    children: 
-                    [
-                      Column
-                      (
-                        children: 
-                        [
-                          Icon(Icons.cloud_queue, size: 80, color: Colors.orange.shade400),
-                        ],
-                      ),
-
-                      const SizedBox(width: 24),
-
-                      Expanded
-                      (
-                        child: Column
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const 
+                      [
+                        Text
                         (
-                          crossAxisAlignment: CrossAxisAlignment.start,
-
-                          children: 
-                          [
-                            const Text
-                            (
-                              '25°C',
-                              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-                            ),
-
-                            const Text
-                            (
-                              'Cloudy with a chance of sunshine',
-                              style: TextStyle(fontSize: 14, color: Colors.grey),
-                            ),
-
-                            const Text
-                            (
-                              'London, UK',
-                              style: TextStyle(fontSize: 14, color: Colors.grey),
-                            ),
-                          ],
+                          "25°C",
+                          style: TextStyle
+                          (
+                            fontSize: 42,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1C1C1E),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                        Text
+                        (
+                          "Cloudy with a chance of sunshine",
+                          style: TextStyle(color: Color(0xFF6B6B6B)),
+                        ),
+                        Text
+                        (
+                          "Cebu City, Philippines",
+                          style: TextStyle(color: Color(0xFF6B6B6B)),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                // Hourly Forecast
+                const SizedBox(height: 20),
+
                 Container
                 (
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration
                   (
-                    color: const Color(0xFFD4E0F0),
-                    borderRadius: BorderRadius.circular(16),
+                    color: const Color(0xFFC8CDD6),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: GridView.count
                   (
                     crossAxisCount: 4,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    children: 
-                    [
-                      _buildForecastCard('10:00', Icons.wb_sunny, 26),
-                      _buildForecastCard('11:00', Icons.wb_sunny, 27),
-                      _buildForecastCard('13:00', Icons.wb_sunny, 25),
-                      _buildForecastCard('13:00', Icons.cloud_queue, 24),
-                      _buildForecastCard('10:00', Icons.wb_sunny, 25),
-                      _buildForecastCard('14:00', Icons.cloud_queue, 24),
-                      _buildForecastCard('14:00', Icons.cloud_queue, 23),
-                      _buildForecastCard('15:00', Icons.grain, 22),
-                    ],
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    children: forecastData.map((item) 
+                    {
+                      return ForecastCard
+                      (
+                        item["time"] as String,
+                        item["temp"] as String,
+                        item["icon"] as IconData,
+                      );
+                    }).toList(),
                   ),
                 ),
               ],
             ),
           ),
-        ),
-      ),
-      
-      bottomNavigationBar: BottomNavigationBar
-      (
-        items: const 
-        [
-          BottomNavigationBarItem
-          (
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-
-          BottomNavigationBarItem
-          (
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-
-          BottomNavigationBarItem
-          (
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
         ],
-        currentIndex: 0,
-        selectedItemColor: const Color(0xFF4A90E2),
-        unselectedItemColor: Colors.grey,
       ),
     );
   }
+}
 
-  Widget _buildForecastCard(String time, IconData icon, int temp) 
+// 📦 FORECAST CARD
+class ForecastCard extends StatelessWidget 
+{
+  final String time;
+  final String temp;
+  final IconData icon;
+
+  const ForecastCard(this.time, this.temp, this.icon, {super.key});
+
+  @override
+  Widget build(BuildContext context) 
   {
     return Container
     (
       decoration: BoxDecoration
       (
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xFFF0F2F5),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: 
+        [
+          BoxShadow
+          (
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-
+      padding: const EdgeInsets.all(8),
       child: Column
       (
         mainAxisAlignment: MainAxisAlignment.center,
-
         children: 
         [
           Text
           (
             time,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
+            style: const TextStyle(fontSize: 12, color: Color(0xFF6B6B6B)),
           ),
-
-          const SizedBox(height: 8),
-
-          Icon(icon, size: 24, color: Colors.orange),
-
-          const SizedBox(height: 8),
-          
+          const SizedBox(height: 5),
+          Icon(icon, size: 22, color: Colors.orange),
+          const SizedBox(height: 5),
           Text
           (
-            '$temp°C',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            temp,
+            style: const TextStyle
+            (
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1C1C1E),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// 🔘 NAV ITEM
+class NavItem extends StatelessWidget 
+{
+  final IconData icon;
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+
+  const NavItem(this.icon, this.label, this.active, this.onTap, {super.key});
+
+  @override
+  Widget build(BuildContext context) 
+  {
+    return GestureDetector
+    (
+      onTap: onTap,
+      child: Column
+      (
+        children: 
+        [
+          CircleAvatar
+          (
+            radius: 22,
+            backgroundColor: active ? const Color(0xFF2979FF) : const Color(0xFFB0B8C1),
+            child: Icon(icon, color: Colors.white, size: 22),
+          ),
+          const SizedBox(height: 6),
+          Text
+          (
+            label,
+            style: TextStyle
+            (
+              fontSize: 12,
+              color: active ? const Color(0xFF2979FF) : const Color(0xFF8A8A8E),
+            ),
           ),
         ],
       ),
